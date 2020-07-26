@@ -1,0 +1,339 @@
+😊️😊️😊️DESAFÍO - TOP 100
+
+😊️😊️INSTRUCCIONES
+
+
+😊️ 1. CREAR BASE DE DATOS LLAMADA PELÍCULAS (1 PUNTO)
+
+TRubilarP=# CREATE DATABASE películas;
+CREATE DATABASE
+TRubilarP=# \c películas;
+You are now connected to database "películas" as user "TRubilarP".
+películas=# 
+
+
+😊️ 2. REVISAR LOS ARCHIVOS PELICULAS.CSV Y REPARTO.CSV PARA CREAR LAS TABLAS CORRESPONDIENTES,
+DETERMINANDO LA RELACIÓN ENTRE AMBAS TABLAS. (2 PUNTOS)
+
+
+películas=# CREATE TABLE Cinema(
+películas(# id INT,
+películas(# Película VARCHAR(150),
+películas(# Año_Estreno VARCHAR(10),
+películas(# Director VARCHAR(150),
+películas(# PRIMARY KEY(id)
+películas(# );
+CREATE TABLE
+
+películas=# SELECT * FROM Cinema;
+
+ id | película | año_estreno | director 
+----+----------+-------------+----------
+(0 rows)
+
+
+películas=# CREATE TABLE starring(
+películas(# id INT,
+películas(# Protagonistas VARCHAR(100),
+películas(# FOREIGN KEY (id) REFERENCES Cinema (id)
+películas(# );
+CREATE TABLE
+películas=# 
+
+películas=# SELECT * FROM starring;
+ id | protagonistas 
+----+---------------
+(0 rows)
+
+
+😊️ 3. CARGAR AMBOS ARCHIVOS A SU TABLA CORRESPONDIENTE (1 PUNTO)
+
+películas=# \copy Cinema FROM 'Escritorio/top100/peliculas.csv' csv header;
+COPY 100
+películas=# 
+
+películas=# \copy starring FROM 'Escritorio/top100/reparto.csv' csv;
+COPY 1051
+películas=# 
+
+
+😊️ 4. LISTAR TODOS LOS ACTORES QUE APARECEN EN LA PELÍCULA "TITANIC", INDICANDO EL TÍTULO DE LA PELÍCULA,
+AÑO DE ESTRENO, DIRECTOR Y TODO EL REPARTO. (0.5 PUNTOS)
+
+películas=# SELECT película, año_estreno, director, protagonistas FROM Cinema JOIN starring ON Cinema.id=starring.id WHERE Cinema.película='Titanic';
+
+ película | año_estreno |   director    |   protagonistas   
+----------+-------------+---------------+-------------------
+ Titanic  |        1997 | James Cameron | Leonardo DiCaprio
+ Titanic  |        1997 | James Cameron | Kate Winslet
+ Titanic  |        1997 | James Cameron | Billy Zane
+ Titanic  |        1997 | James Cameron | Kathy Bates
+ Titanic  |        1997 | James Cameron | Frances Fisher
+ Titanic  |        1997 | James Cameron | Bernard Hill
+ Titanic  |        1997 | James Cameron | Jonathan Hyde
+ Titanic  |        1997 | James Cameron | Danny Nucci
+ Titanic  |        1997 | James Cameron | David Warner
+ Titanic  |        1997 | James Cameron | Bill Paxton
+ Titanic  |        1997 | James Cameron | Gloria Stuart
+ Titanic  |        1997 | James Cameron | Victor Garber
+ Titanic  |        1997 | James Cameron | Suzy Amis
+(13 rows)
+
+
+
+😊️ 5. LISTAR LOS TITULOS DE LAS PELÍCULAS DONDE ACTÚE HARRISON FORD.(0.5 PUNTOS)
+
+películas=# SELECT película FROM Cinema JOIN starring ON Cinema.id=starring.id WHERE starring.protagonistas='Harrison Ford';
+                   película                    
+-----------------------------------------------
+ Star Wars. Episodio IV: Una nueva esperanza
+ Indiana Jones y la última cruzada
+ En busca del arca perdida
+ Star Wars. Episodio V: El imperio contraataca
+ Star Wars. Episodio VI: El retorno del Jedi
+ Blade Runner
+ Apocalypse Now
+ Indiana Jones y el templo maldito
+(8 rows)
+
+
+😊️ 6. LISTAR LOS 10 DIRECTORES MAS POPULARES, INDICANDO SU NOMBRE Y CUÁNTAS PELÍCULAS APARECEN EN EL
+TOP 100.(1 PUNTOS)
+
+
+películas=# SELECT director,count(*) FROM Cinema GROUP BY director ORDER BY count(*) DESC LIMIT 10;
+
+       director       | count 
+----------------------+-------
+ Steven Spielberg     |     9
+ Francis Ford Coppola |     4
+ Peter Jackson        |     4
+ Quentin Tarantino    |     3
+ Martin Scorsese      |     3
+ Robert Zemeckis      |     3
+ James Cameron        |     3
+ Ridley Scott         |     3
+ George Lucas         |     3
+ Frank Darabont       |     2
+(10 rows)
+
+
+😊️ 7. INDICAR CUANTOS ACTORES DISTINTOS HAY (1 PUNTOS)
+
+** ESTA QUERY ENTREGA EL NOMBRE DE LOS 831 ACTORES DISTINTOS
+películas=# SELECT DISTINCT protagonistas FROM starring;
+(831 rows)
+
+
+** ESTA QUERY SOLO LOS CUENTA
+películas=# SELECT count (DISTINCT protagonistas) FROM starring; 
+ count 
+-------
+   831
+(1 row)
+
+
+😊️ 8. INDICAR LAS PELÍCULAS ESTRENADAS ENTRE LOS AÑOS 1990 Y 1999 (AMBOS INCLUIDOS) ORDENADAS POR
+TÍTULO DE MANERA ASCENDENTE.(1 PUNTO)
+
+
+** AQUÍ TUVE QUE ACTUALIZAR LA COLUMNA AÑO_ESTRENO, PORQUE INICIALMENTE LA HICE CON UN TIPO DE DATO VARCHAR Y AHORA NECESITO INT (NO PUDE HACERLO CON VARCHAR, ES POR ELLO QUE CAMBIÉ A INT)
+
+películas=# ALTER TABLE Cinema ALTER COLUMN Año_Estreno TYPE INT USING Año_Estreno::integer;
+ALTER TABLE
+películas=#
+
+películas=# SELECT película, año_estreno FROM Cinema WHERE año_estreno >= 1990 AND año_estreno <= 1999 ORDER BY año_estreno;
+
+                  película                  | año_estreno 
+--------------------------------------------+-------------
+ Uno de los nuestros                        |        1990
+ Eduardo Manostijeras                       |        1990
+ El Padrino. Parte III                      |        1990
+ Terminator 2: el juicio final              |        1991
+ El silencio de los corderos                |        1991
+ La lista de Schindler                      |        1993
+ Parque Jurásico                            |        1993
+ Pesadilla antes de navidad                 |        1993
+ Forest Gump                                |        1994
+ Cadena perpetua                            |        1994
+ Pulp Fiction                               |        1994
+ Entrevista con el vampiro                  |        1994
+ El profesional                             |        1994
+ Seven                                      |        1995
+ Toy Story                                  |        1995
+ Braveheart                                 |        1995
+ Trainspotting                              |        1996
+ Titanic                                    |        1997
+ Hombres de negro                           |        1997
+ Mejor... imposible                         |        1997
+ American History X                         |        1998
+ Salvar al soldado Ryan                     |        1998
+ El show de Truman                          |        1998
+ Toy Story 2                                |        1999
+ La milla verde                             |        1999
+ American Beauty                            |        1999
+ Matrix                                     |        1999
+ Star Wars. Episodio I: La amenaza fantasma |        1999
+ El sexto sentido                           |        1999
+ El club de la pelea                        |        1999
+(30 rows)
+
+
+😊️ 9. LISTAR EL REPARTO DE LAS PELÍCULAS LANZADAS EL AÑO 2001 (1 PUNTO)
+
+películas=# SELECT protagonistas, película, año_estreno FROM cinema JOIN starring ON cinema.id=starring.id WHERE año_estreno=2001;
+
+protagonistas   |                     película                     | año_estreno 
+-------------------+--------------------------------------------------+-------------
+ Elijah Wood       | El Señor de los anillos: La comunidad del anillo |        2001
+ Ian McKellen      | El Señor de los anillos: La comunidad del anillo |        2001
+ Viggo Mortensen   | El Señor de los anillos: La comunidad del anillo |        2001
+ Sean Astin        | El Señor de los anillos: La comunidad del anillo |        2001
+ Sean Bean         | El Señor de los anillos: La comunidad del anillo |        2001
+ Cate Blanchett    | El Señor de los anillos: La comunidad del anillo |        2001
+ Hugo Weaving      | El Señor de los anillos: La comunidad del anillo |        2001
+ Liv Tyler         | El Señor de los anillos: La comunidad del anillo |        2001
+ Ian Holm          | El Señor de los anillos: La comunidad del anillo |        2001
+ Christopher Lee   | El Señor de los anillos: La comunidad del anillo |        2001
+ John Rhys-Davies  | El Señor de los anillos: La comunidad del anillo |        2001
+ Orlando Bloom     | El Señor de los anillos: La comunidad del anillo |        2001
+ Dominic Monaghan  | El Señor de los anillos: La comunidad del anillo |        2001
+ Billy Boyd        | El Señor de los anillos: La comunidad del anillo |        2001
+ Lawrence Makoare  | El Señor de los anillos: La comunidad del anillo |        2001
+ Craig Parker      | El Señor de los anillos: La comunidad del anillo |        2001
+ Marton Csokas     | El Señor de los anillos: La comunidad del anillo |        2001
+ Andy Serkis       | El Señor de los anillos: La comunidad del anillo |        2001
+ Animada           | Monstruos S.A.                                   |        2001
+ Animada           | El viaje de Chihiro                              |        2001
+ Audrey Tautou     | Amélie                                           |        2001
+ Mathieu Kassovitz | Amélie                                           |        2001
+ Rufus             | Amélie                                           |        2001
+ Lorella Cravotta  | Amélie                                           |        2001
+ Serge Merlin      | Amélie                                           |        2001
+ Jamel Debbouze    | Amélie                                           |        2001
+ Claire Maurier    | Amélie                                           |        2001
+ Clotilde Mollet   | Amélie                                           |        2001
+ Isabelle Nanty    | Amélie                                           |        2001
+ Dominique Pinon   | Amélie                                           |        2001
+ Artus de Penguern | Amélie                                           |        2001
+ Yolande Moreau    | Amélie                                           |        2001
+ Urbain Cancelier  | Amélie                                           |        2001
+ Maurice Benichou  | Amélie                                           |        2001
+ George Clooney    | Ocean's Eleven                                   |        2001
+ Julia Roberts     | Ocean's Eleven                                   |        2001
+ Matt Damon        | Ocean's Eleven                                   |        2001
+ Andy García       | Ocean's Eleven                                   |        2001
+ Brad Pitt         | Ocean's Eleven                                   |        2001
+ Casey Affleck     | Ocean's Eleven                                   |        2001
+ Scott Caan        | Ocean's Eleven                                   |        2001
+ Elliott Gould     | Ocean's Eleven                                   |        2001
+ Bernie Mac        | Ocean's Eleven                                   |        2001
+ Carl Reiner       | Ocean's Eleven                                   |        2001
+ Don Cheadle       | Ocean's Eleven                                   |        2001
+ Topher Grace      | Ocean's Eleven                                   |        2001
+ Joshua Jackson    | Ocean's Eleven                                   |        2001
+ Holly Marie Combs | Ocean's Eleven                                   |        2001
+ Shane West        | Ocean's Eleven                                   |        2001
+ Nicole Kidman     | Mouling Rouge                                    |        2001
+ Ewan McGregor     | Mouling Rouge                                    |        2001
+ John Leguizamo    | Mouling Rouge                                    |        2001
+ Jim Broadbent     | Mouling Rouge                                    |        2001
+ Richard Roxburgh  | Mouling Rouge                                    |        2001
+ David Wenham      | Mouling Rouge                                    |        2001
+ Jacek Koman       | Mouling Rouge                                    |        2001
+ Kylie Minogue     | Mouling Rouge                                    |        2001
+(57 rows)
+
+
+😊️ 10. LISTAR LOS ACTORES DE LA PELÍCULA MÁS NUEVA (1 PUNTO)
+
+** QUERY 1: SOLO LISTA LOS ACTORES DE LA PELÍCULA MÁS NUEVA
+
+películas=# SELECT protagonistas FROM Cinema JOIN starring ON Cinema.id=starring.id WHERE año_estreno=(SELECT MAX(año_estreno) FROM Cinema);
+    protagonistas     
+----------------------
+ Christian Bale
+ Heath Ledger
+ Aaron Eckhart
+ Michael Caine
+ Gary Oldman
+ Maggie Gyllenhaal
+ Morgan Freeman
+ Eric Roberts
+ Cillian Murphy
+ Anthony Michael Hall
+ Michael Jai White
+ William Fichtner
+ Edison Chen
+ Monique Curnen
+ Chin Han
+ Nestor Carbonell
+ Ritchie Coster
+ Keith Szarabajka
+ Colin McFarlane
+ Melinda McGraw
+ Nathan Gamble
+ Michael Vieau
+ Animada
+ Robert Downey Jr.
+ Terrence Howard
+ Gwyneth Paltrow
+ Jeff Bridges
+ Stan Lee
+ Leslie Bibb
+ Clark Gregg
+ Shaun Toub
+ Faran Tahir
+ Samuel L. Jackson
+(33 rows)
+
+
+** QUERY 2: ESTA QUERY LANZA PROTAGONISTA, PELÍCULA Y AÑO DE ESTRENO DE LAS PELÍCULAS MÁS NUEVAS.
+
+películas=# SELECT protagonistas, película, año_estreno FROM Cinema JOIN starring ON Cinema.id=starring.id WHERE año_estreno=(SELECT MAX(año_estreno) FROM Cinema);
+
+    protagonistas     |      película       | año_estreno 
+----------------------+---------------------+-------------
+ Christian Bale       | El caballero oscuro | 2008
+ Heath Ledger         | El caballero oscuro | 2008
+ Aaron Eckhart        | El caballero oscuro | 2008
+ Michael Caine        | El caballero oscuro | 2008
+ Gary Oldman          | El caballero oscuro | 2008
+ Maggie Gyllenhaal    | El caballero oscuro | 2008
+ Morgan Freeman       | El caballero oscuro | 2008
+ Eric Roberts         | El caballero oscuro | 2008
+ Cillian Murphy       | El caballero oscuro | 2008
+ Anthony Michael Hall | El caballero oscuro | 2008
+ Michael Jai White    | El caballero oscuro | 2008
+ William Fichtner     | El caballero oscuro | 2008
+ Edison Chen          | El caballero oscuro | 2008
+ Monique Curnen       | El caballero oscuro | 2008
+ Chin Han             | El caballero oscuro | 2008
+ Nestor Carbonell     | El caballero oscuro | 2008
+ Ritchie Coster       | El caballero oscuro | 2008
+ Keith Szarabajka     | El caballero oscuro | 2008
+ Colin McFarlane      | El caballero oscuro | 2008
+ Melinda McGraw       | El caballero oscuro | 2008
+ Nathan Gamble        | El caballero oscuro | 2008
+ Michael Vieau        | El caballero oscuro | 2008
+ Animada              | Wall-E              | 2008
+ Robert Downey Jr.    | Iron Man            | 2008
+ Terrence Howard      | Iron Man            | 2008
+ Gwyneth Paltrow      | Iron Man            | 2008
+ Jeff Bridges         | Iron Man            | 2008
+ Stan Lee             | Iron Man            | 2008
+ Leslie Bibb          | Iron Man            | 2008
+ Clark Gregg          | Iron Man            | 2008
+ Shaun Toub           | Iron Man            | 2008
+ Faran Tahir          | Iron Man            | 2008
+ Samuel L. Jackson    | Iron Man            | 2008
+(33 rows)
+
+
+
+PARA LA REALIZACIÓN DE ESTE DESAFÍO SE DEBEN DESCARGAR LOS SIGUIENTES ARCHIVOS, QUE SE ECUENTRAN EN
+PLATAFORMA EN EL ARCHIVO ZIP LLAMADO APOYO DESAFÍO
+
+PELICULAS.CSV
+REPARTO.CSV
